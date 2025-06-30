@@ -1,2 +1,2 @@
 # landing-page
-[Live site](christopherkumar-projects.netlify.app)
+[christopherkumar-projects.netlify.app](christopherkumar-projects.netlify.app)
