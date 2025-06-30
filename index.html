@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Christopher Kumar - Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+
+    <header>
+      <h1>Christopher Kumar</h1>
+      <p class="subtitle">
+        Computer Systems Engineer<br />Passionate about AI, embedded systems,
+        and building useful tools.
+      </p>
+    </header>
+
+    <div id="coding-projects" class="tab-content active">
+      <div class="projects-container" id="coding-projects-container">
+        <!-- Coding projects will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <div id="research-projects" class="tab-content">
+      <div class="projects-container" id="research-projects-container">
+        <!-- Research projects will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+      <div class="tab-nav">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <button
+          class="tab-button active"
+          onclick="switchTab('coding-projects', this)"
+        >
+          Coding Projects
+        </button>
+        <button
+          class="tab-button"
+          onclick="switchTab('research-projects', this)"
+        >
+          Research Projects
+        </button>
+      </div>
+    </div>
+
+    <script src="projects-data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
