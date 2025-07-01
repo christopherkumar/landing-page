@@ -31,6 +31,7 @@ const codingProjects = [
     description:
       "A lightweight chatbot interface for interacting with Ollama language models. Features a clean UI and easy integration with local LLM instances.",
     technologies: ["Python", "Ollama", "LLM"],
+    siteUrl: null, // No deployed site
     githubUrl: "https://github.com/christopherkumar/simple-ollama-chatbot",
   },
   // Add more coding projects here following the same structure
