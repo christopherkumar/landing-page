@@ -109,24 +109,14 @@ h1 {
     font-weight: 600;
     margin-bottom: 1rem;
     color: #1d1d1f;
-    min-height: 3.9rem; /* 3 lines at 1.3rem line-height */
     line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .project-description {
     color: #86868b;
     line-height: 1.5;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-size: 0.9rem;
-    min-height: 4.5rem; /* 3 lines at 1.5 line-height */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     flex-grow: 1;
 }
 
@@ -134,8 +124,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1.2rem;
-    min-height: 60px; /* Space for 2 rows of tags */
+    margin-bottom: 0.8rem;
     align-content: flex-start;
 }
 
@@ -165,7 +154,6 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-top: auto; /* Push to bottom */
 }
 
 .project-link {
@@ -242,11 +230,6 @@ h1 {
     margin-bottom: 0.5rem;
     color: #1d1d1f;
     line-height: 1.3;
-    min-height: 5.2rem; /* 4 lines at 1.3 line-height */
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .research-type {
@@ -261,16 +244,24 @@ h1 {
     line-height: 1;
 }
 
+.research-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+}
+
 .research-card .project-description {
-    min-height: 7.5rem; /* 5 lines at 1.5 line-height */
-    -webkit-line-clamp: 5;
+    color: #86868b;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    flex-grow: 1;
 }
 
 .research-links {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-top: auto; /* Push to bottom */
 }
 
 .research-link {

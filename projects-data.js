@@ -6,7 +6,7 @@ const codingProjects = [
     title: "Audio Transforms",
     description:
       "A powerful audio processing toolkit for transformations and manipulations of audio files.",
-    technologies: ["Python", "Audio Processing", "DSP"],
+    technologies: ["DSP", "JavaScript", "HTML/CSS"],
     siteUrl: "https://audio-transforms.netlify.app",
     githubUrl: "https://github.com/christopherkumar/audio-transforms",
   },
@@ -14,7 +14,7 @@ const codingProjects = [
     title: "Audible Time to Percentage",
     description:
       "Convert Audible audiobook timestamps into percentage progress for easy tracking.",
-    technologies: ["JavaScript", "Web Tool", "Utility"],
+    technologies: ["JavaScript", "HTML/CSS"],
     siteUrl: "https://audible-time-to-percentage.netlify.app",
     githubUrl: "https://github.com/christopherkumar/audible_time-to-percentage",
   },
@@ -35,6 +35,7 @@ const researchProjects = [
     type: "Computer Vision Research",
     description:
       "Investigation into how different camera models and settings impact machine learning image classification accuracy and performance.",
+    technologies: ["PyTorch", "Python", "MATLAB"],
     paperUrl:
       "https://drive.google.com/file/d/1EebltMSemESHyryEF65LBV-ht4Ff9U0w/view",
     githubUrl: null, // Set to null if no GitHub repo
@@ -45,6 +46,7 @@ const researchProjects = [
     type: "AI in Education",
     description:
       "Comparative analysis of LLM performance in automated grading across Python programming and short answer assessments using different rubrics. Developed with a custom prompt engineering test framework.",
+    technologies: ["LLM", "OpenAI", "HuggingFace", "Ollama", "Python"],
     paperUrl:
       "https://drive.google.com/file/d/1SM_kGf_Xn0rDWYnz6JT5i9v6w1HTkGaa/view",
     githubUrl: "https://github.com/christopherkumar/prompt_engineering_test",
@@ -55,6 +57,7 @@ const researchProjects = [
     type: "NLP Research",
     description:
       "Comprehensive evaluation methodology and metrics for assessing Retrieval-Augmented Generation systems in various applications.",
+    technologies: ["LLM", "RAG", "NLP", "Python"],
     paperUrl:
       "https://drive.google.com/file/d/1JAXUuQq4u81rpQDBn9JNBb98mEz8RrmO/view",
     githubUrl: "https://github.com/christopherkumar/RAG-evaluation",
