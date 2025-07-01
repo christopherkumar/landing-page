@@ -32,10 +32,9 @@ const codingProjects = [
 const researchProjects = [
   {
     title: "Effect of Camera Model and Camera Settings in Image Classification",
-    type: "Computer Vision Research",
+    technologies: ["PyTorch", "Python", "MATLAB"],
     description:
       "Investigation into how different camera models and settings impact machine learning image classification accuracy and performance.",
-    technologies: ["PyTorch", "Python", "MATLAB"],
     paperUrl:
       "https://drive.google.com/file/d/1EebltMSemESHyryEF65LBV-ht4Ff9U0w/view",
     githubUrl: null, // Set to null if no GitHub repo
@@ -43,10 +42,9 @@ const researchProjects = [
   {
     title:
       "The Grading Capabilities of Large Language Models: A Comparative Study of OpenAI and Ollama",
-    type: "AI in Education",
+    technologies: ["LLM", "OpenAI", "HuggingFace", "Ollama", "Python"],
     description:
       "Comparative analysis of LLM performance in automated grading across Python programming and short answer assessments using different rubrics. Developed with a custom prompt engineering test framework.",
-    technologies: ["LLM", "OpenAI", "HuggingFace", "Ollama", "Python"],
     paperUrl:
       "https://drive.google.com/file/d/1SM_kGf_Xn0rDWYnz6JT5i9v6w1HTkGaa/view",
     githubUrl: "https://github.com/christopherkumar/prompt_engineering_test",
@@ -54,10 +52,9 @@ const researchProjects = [
   },
   {
     title: "RAG Evaluation",
-    type: "NLP Research",
+    technologies: ["LLM", "RAG", "NLP", "Python"],
     description:
       "Comprehensive evaluation methodology and metrics for assessing Retrieval-Augmented Generation systems in various applications.",
-    technologies: ["LLM", "RAG", "NLP", "Python"],
     paperUrl:
       "https://drive.google.com/file/d/1JAXUuQq4u81rpQDBn9JNBb98mEz8RrmO/view",
     githubUrl: "https://github.com/christopherkumar/RAG-evaluation",
