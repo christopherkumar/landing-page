@@ -39,7 +39,7 @@ body {
 
 /* Header */
 header {
-  padding: 3rem 2rem;
+  padding: 3rem 2rem 2rem; /* Adjusted bottom padding */
   text-align: center;
   position: relative;
   animation: fadeInDown 1s ease-out;
@@ -71,10 +71,45 @@ h1 {
 .subtitle {
   font-size: 1.2rem;
   color: #86868b;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* Projects Grid */
+/* Header contact links */
+.header-contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.header-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #86868b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.header-contact-link:hover {
+  color: #0071e3;
+  transform: translateY(-2px);
+}
+
+.header-contact-link svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.header-contact-link:hover svg {
+  transform: scale(1.1);
+}
+
+/* Projects Grid - ensure consistent alignment */
 .projects-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -83,16 +118,16 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
   animation: fadeInUp 1s ease-out 0.3s backwards;
-  align-items: stretch; /* Ensure all cards stretch to same height */
+  align-items: stretch; /* Ensure cards stretch to same height in each row */
 }
 
-/* Card Structure - Consistent skeleton */
+/* Card Structure - Adaptive layout system */
 .project-card,
 .research-card {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 2.5rem; /* Increased from 2rem for better spacing */
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -101,8 +136,7 @@ h1 {
   transform: translateY(0);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 380px; /* Ensure minimum height */
+  min-height: 320px; /* Changed from fixed height to min-height */
 }
 
 .project-card:hover,
@@ -120,43 +154,58 @@ h1 {
   border-color: rgba(94, 92, 230, 0.2);
 }
 
-/* Title section - fixed height */
+/* Title section - adaptive height */
+.title-section {
+  margin-bottom: 1.5rem; /* Increased padding between title and description */
+}
+
 .project-title,
 .research-title {
   font-size: 1.3rem;
   font-weight: 600;
   color: #1d1d1f;
-  line-height: 1.4;
-  min-height: 72px; /* Space for ~2 lines */
-  margin-bottom: 1rem;
+  line-height: 1.5; /* Increased from 1.4 for better spacing */
+  margin: 0;
 }
 
-/* Description section - flexible but consistent */
+/* Description section - adaptive height */
+.description-section {
+  margin-bottom: 1.5rem; /* Add padding after description */
+}
+
 .project-description {
   color: #86868b;
   line-height: 1.6;
   font-size: 0.9rem;
-  flex: 1; /* Takes up remaining space */
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
-/* Tags section - fixed height */
+/* Tags section - adaptive height */
+.tags-section {
+  margin-bottom: 1.5rem; /* Add padding after tags */
+}
+
 .tech-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  min-height: 64px; /* Space for 2 rows of tags */
-  align-content: flex-start;
-  margin-bottom: 1rem;
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
+  width: 100%;
 }
 
-/* Links section - always at bottom */
+/* Links section - stays at bottom */
+.links-section {
+  margin-top: auto; /* Push to bottom */
+  padding-top: 1rem; /* Add padding above links */
+}
+
 .project-links,
 .research-links {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: auto; /* Push to bottom */
+  flex-direction: row; /* Changed from column to row */
+  gap: 1rem; /* Increased gap for horizontal layout */
+  align-items: center;
+  height: 100%;
 }
 
 .tech-tag {
@@ -181,27 +230,23 @@ h1 {
   transform: translateY(-1px);
 }
 
-.project-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .project-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem; /* Reduced gap */
   color: #0071e3;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Reduced from 0.9rem */
   width: fit-content; /* Only as wide as content */
 }
 
 .project-link svg {
   flex-shrink: 0;
   transition: transform 0.2s ease;
+  width: 14px; /* Set fixed size */
+  height: 14px;
 }
 
 .project-link:hover {
@@ -219,29 +264,44 @@ h1 {
 }
 
 /* Research Projects Style */
-/* Remove separate research card styles since they're now unified */
-
-.research-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2rem 2rem 6rem; /* Extra bottom padding for tab navigation */
+  margin-top: 3rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.5);
 }
+
+.footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.footer-note {
+  color: #86868b;
+  font-size: 0.85rem;
+}
+
+/* Remove separate research card styles since they're now unified */
 
 .research-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem; /* Reduced gap */
   color: #5e5ce6;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Reduced from 0.9rem */
   width: fit-content; /* Only as wide as content */
 }
 
 .research-link svg {
   flex-shrink: 0;
   transition: transform 0.2s ease;
+  width: 14px; /* Set fixed size */
+  height: 14px;
 }
 
 .research-link:hover {
@@ -352,23 +412,81 @@ h1 {
   }
 }
 
-/* Responsive */
+/* Responsive improvements */
 @media (max-width: 768px) {
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .header-contact-links {
+    gap: 1rem;
+  }
+
+  .header-contact-link {
+    font-size: 0.85rem;
   }
 
   .projects-container {
     grid-template-columns: 1fr;
     padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .project-card,
+  .research-card {
+    padding: 2rem; /* Keep smaller padding on mobile */
+    min-height: 300px; /* Adaptive height for mobile */
+  }
+
+  .title-section {
+    margin-bottom: 1rem; /* Slightly less padding on mobile */
+  }
+
+  .description-section {
+    margin-bottom: 1rem;
+  }
+
+  .tags-section {
+    margin-bottom: 1rem;
+  }
+
+  .project-title,
+  .research-title {
+    font-size: 1.1rem; /* Keep original size for mobile */
+  }
+
+  .project-description {
+    font-size: 0.85rem;
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .project-link,
+  .research-link {
+    font-size: 0.8rem; /* Slightly smaller on mobile */
   }
 
   .tab-button {
-    font-size: 0.85rem;
-    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
   }
 
   .tab-container {
     bottom: 10px;
+    width: 90%;
+    left: 5%;
+    transform: none;
+  }
+
+  .tab-nav {
+    gap: 2px;
+    padding: 3px;
   }
 }
