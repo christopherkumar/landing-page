@@ -39,7 +39,7 @@ body {
 
 /* Header */
 header {
-  padding: 3rem 2rem 2rem; /* Adjusted bottom padding */
+  padding: 3rem 2rem 2rem;
   text-align: center;
   position: relative;
   animation: fadeInDown 1s ease-out;
@@ -52,6 +52,7 @@ h1 {
   background: linear-gradient(45deg, #0071e3, #0077ed, #0071e3);
   background-size: 200% 200%;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradientText 3s ease infinite;
 }
@@ -118,7 +119,7 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
   animation: fadeInUp 1s ease-out 0.3s backwards;
-  align-items: stretch; /* Ensure cards stretch to same height in each row */
+  align-items: stretch;
 }
 
 /* Card Structure - Adaptive layout system */
@@ -127,7 +128,7 @@ h1 {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 20px;
-  padding: 2.5rem; /* Increased from 2rem for better spacing */
+  padding: 2.5rem;
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -136,7 +137,7 @@ h1 {
   transform: translateY(0);
   display: flex;
   flex-direction: column;
-  min-height: 320px; /* Changed from fixed height to min-height */
+  min-height: 320px;
 }
 
 .project-card:hover,
@@ -156,7 +157,7 @@ h1 {
 
 /* Title section - adaptive height */
 .title-section {
-  margin-bottom: 1.5rem; /* Increased padding between title and description */
+  margin-bottom: 1.5rem;
 }
 
 .project-title,
@@ -164,13 +165,13 @@ h1 {
   font-size: 1.3rem;
   font-weight: 600;
   color: #1d1d1f;
-  line-height: 1.5; /* Increased from 1.4 for better spacing */
+  line-height: 1.5;
   margin: 0;
 }
 
 /* Description section - adaptive height */
 .description-section {
-  margin-bottom: 1.5rem; /* Add padding after description */
+  margin-bottom: 1.5rem;
 }
 
 .project-description {
@@ -182,7 +183,7 @@ h1 {
 
 /* Tags section - adaptive height */
 .tags-section {
-  margin-bottom: 1.5rem; /* Add padding after tags */
+  margin-bottom: 1.5rem;
 }
 
 .tech-stack {
@@ -195,15 +196,15 @@ h1 {
 
 /* Links section - stays at bottom */
 .links-section {
-  margin-top: auto; /* Push to bottom */
-  padding-top: 1rem; /* Add padding above links */
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 .project-links,
 .research-links {
   display: flex;
-  flex-direction: row; /* Changed from column to row */
-  gap: 1rem; /* Increased gap for horizontal layout */
+  flex-direction: row;
+  gap: 1rem;
   align-items: center;
   height: 100%;
 }
@@ -233,19 +234,19 @@ h1 {
 .project-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem; /* Reduced gap */
+  gap: 0.4rem;
   color: #0071e3;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 0.85rem; /* Reduced from 0.9rem */
-  width: fit-content; /* Only as wide as content */
+  font-size: 0.85rem;
+  width: fit-content;
 }
 
 .project-link svg {
   flex-shrink: 0;
   transition: transform 0.2s ease;
-  width: 14px; /* Set fixed size */
+  width: 14px;
   height: 14px;
 }
 
@@ -267,7 +268,7 @@ h1 {
 /* Footer */
 footer {
   text-align: center;
-  padding: 2rem 2rem 6rem; /* Extra bottom padding for tab navigation */
+  padding: 2rem 2rem 6rem;
   margin-top: 3rem;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.5);
@@ -288,19 +289,19 @@ footer {
 .research-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem; /* Reduced gap */
+  gap: 0.4rem;
   color: #5e5ce6;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 0.85rem; /* Reduced from 0.9rem */
-  width: fit-content; /* Only as wide as content */
+  font-size: 0.85rem;
+  width: fit-content;
 }
 
 .research-link svg {
   flex-shrink: 0;
   transition: transform 0.2s ease;
-  width: 14px; /* Set fixed size */
+  width: 14px;
   height: 14px;
 }
 
@@ -360,19 +361,31 @@ footer {
 .tab-indicator {
   position: absolute;
   background: #0071e3;
+  background: linear-gradient(135deg, #0071e3, #0077ed);
   border-radius: 36px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   top: 4px;
   bottom: 4px;
   left: 4px;
-  /* Width will be set dynamically by JavaScript */
+  width: calc(50% - 4px);
+  min-width: 80px;
+  height: calc(100% - 8px);
   z-index: 1;
-  opacity: 0;
+  opacity: 1;
+  visibility: visible;
+  display: block;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: left, width;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 113, 227, 0.4);
 }
 
-/* Show indicator after positioning */
-.tab-nav.initialized .tab-indicator {
-  opacity: 1;
+/* Use CSS variables if set */
+.tab-nav .tab-indicator {
+  left: var(--indicator-left, 4px);
+  width: var(--indicator-width, calc(50% - 4px));
 }
 
 /* Tab Content */
@@ -444,12 +457,12 @@ footer {
 
   .project-card,
   .research-card {
-    padding: 2rem; /* Keep smaller padding on mobile */
-    min-height: 300px; /* Adaptive height for mobile */
+    padding: 2rem;
+    min-height: 300px;
   }
 
   .title-section {
-    margin-bottom: 1rem; /* Slightly less padding on mobile */
+    margin-bottom: 1rem;
   }
 
   .description-section {
@@ -462,7 +475,7 @@ footer {
 
   .project-title,
   .research-title {
-    font-size: 1.1rem; /* Keep original size for mobile */
+    font-size: 1.1rem;
   }
 
   .project-description {
@@ -476,7 +489,7 @@ footer {
 
   .project-link,
   .research-link {
-    font-size: 0.8rem; /* Slightly smaller on mobile */
+    font-size: 0.8rem;
   }
 
   .tab-button {

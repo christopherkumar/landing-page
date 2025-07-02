@@ -147,16 +147,112 @@ window.addEventListener("load", () => {
   // Render all projects
   renderProjects();
 
-  // Initialize indicator position
+  // Force indicator initialization with multiple attempts
+  const forceInitialize = () => {
+    const success = initializeIndicator();
+
+    if (!success) {
+      // If failed, try again
+      setTimeout(forceInitialize, 200);
+    }
+  };
+
+  // Try multiple initialization strategies
+  forceInitialize();
+  setTimeout(forceInitialize, 100);
+  setTimeout(forceInitialize, 500);
+  setTimeout(forceInitialize, 1000);
+});
+
+// Also try on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    initializeIndicator();
+  }, 100);
+});
+
+// Also initialize immediately if DOM is already loaded
+if (
+  document.readyState === "complete" ||
+  document.readyState === "interactive"
+) {
+  setTimeout(() => {
+    initializeIndicator();
+  }, 100);
+}
+
+// Final fallback - initialize after everything is settled
+setTimeout(() => {
   const activeButton = document.querySelector(".tab-button.active");
   if (activeButton) {
     updateIndicatorPosition(activeButton);
-    // Add initialized class after a brief delay to show transition
-    setTimeout(() => {
-      document.querySelector(".tab-nav").classList.add("initialized");
-    }, 50);
+  }
+}, 2000);
+
+// Also check after fonts are loaded (important for button sizing)
+if ("fonts" in document) {
+  document.fonts.ready.then(() => {
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  });
+}
+
+// MutationObserver as ultimate fallback for dynamic content
+const observer = new MutationObserver(() => {
+  const activeButton = document.querySelector(".tab-button.active");
+  const indicator = document.getElementById("tabIndicator");
+
+  // Only update if indicator doesn't have inline styles yet
+  if (activeButton && indicator && !indicator.style.width) {
+    updateIndicatorPosition(activeButton);
   }
 });
+
+// Start observing after a delay
+setTimeout(() => {
+  const nav = document.querySelector(".tab-nav");
+  if (nav) {
+    observer.observe(nav, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // Disconnect after 5 seconds to prevent performance issues
+    setTimeout(() => observer.disconnect(), 5000);
+  }
+}, 500);
+
+// Emergency fallback for stubborn mobile browsers
+window.addEventListener(
+  "touchstart",
+  () => {
+    const indicator = document.getElementById("tabIndicator");
+    if (indicator && !indicator.hasAttribute("data-initialized")) {
+      const activeButton = document.querySelector(".tab-button.active");
+      if (activeButton) {
+        updateIndicatorPosition(activeButton);
+        indicator.setAttribute("data-initialized", "true");
+      }
+    }
+  },
+  { once: true, passive: true }
+);
+
+// Handle font loading which can affect button sizes
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    setTimeout(() => {
+      const activeButton = document.querySelector(".tab-button.active");
+      if (activeButton) {
+        updateIndicatorPosition(activeButton);
+      }
+    }, 100);
+  });
+}
 
 // Update indicator on window resize
 let resizeTimeout;
@@ -201,6 +297,84 @@ if ("visualViewport" in window) {
     }
   });
 }
+
+// Additional mobile browser fix: recalculate on first touch/click
+let hasInteracted = false;
+document.addEventListener(
+  "touchstart",
+  () => {
+    if (!hasInteracted) {
+      hasInteracted = true;
+      setTimeout(() => {
+        const activeButton = document.querySelector(".tab-button.active");
+        if (activeButton) {
+          updateIndicatorPosition(activeButton);
+        }
+      }, 100);
+    }
+  },
+  { once: true }
+);
+
+// Recalculate when page becomes visible (tab switching on mobile)
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    setTimeout(() => {
+      const activeButton = document.querySelector(".tab-button.active");
+      if (activeButton) {
+        updateIndicatorPosition(activeButton);
+      }
+    }, 100);
+  }
+});
+
+// Also handle window focus for better mobile support
+window.addEventListener("focus", () => {
+  setTimeout(() => {
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  }, 100);
+});
+
+// Debug helper: triple-tap anywhere to force indicator recalculation
+let tapCount = 0;
+let tapTimer;
+document.addEventListener("touchstart", (e) => {
+  tapCount++;
+  clearTimeout(tapTimer);
+
+  if (tapCount === 3) {
+    // Force recalculation and log debug info
+    const activeButton = document.querySelector(".tab-button.active");
+    const indicator = document.getElementById("tabIndicator");
+    const nav = document.querySelector(".tab-nav");
+
+    console.log("Debug - Active button:", activeButton);
+    console.log("Debug - Indicator:", indicator);
+    console.log("Debug - Nav:", nav);
+
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+
+      // Log computed styles
+      if (indicator) {
+        console.log("Debug - Indicator styles:", {
+          width: indicator.style.width,
+          left: indicator.style.left,
+          opacity: window.getComputedStyle(indicator).opacity,
+        });
+      }
+    }
+
+    tapCount = 0;
+  }
+
+  tapTimer = setTimeout(() => {
+    tapCount = 0;
+  }, 500);
+});
 
 // Make switchTab globally accessible
 window.switchTab = switchTab;
