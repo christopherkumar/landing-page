@@ -365,8 +365,14 @@ footer {
   top: 4px;
   bottom: 4px;
   left: 4px;
-  width: 100px;
+  /* Width will be set dynamically by JavaScript */
   z-index: 1;
+  opacity: 0;
+}
+
+/* Show indicator after positioning */
+.tab-nav.initialized .tab-indicator {
+  opacity: 1;
 }
 
 /* Tab Content */

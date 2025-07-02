@@ -151,8 +151,56 @@ window.addEventListener("load", () => {
   const activeButton = document.querySelector(".tab-button.active");
   if (activeButton) {
     updateIndicatorPosition(activeButton);
+    // Add initialized class after a brief delay to show transition
+    setTimeout(() => {
+      document.querySelector(".tab-nav").classList.add("initialized");
+    }, 50);
   }
 });
+
+// Update indicator on window resize
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  }, 100);
+});
+
+// Also update on orientation change for mobile
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  }, 300); // Delay to ensure layout has updated
+});
+
+// Handle viewport changes on mobile (when browser UI shows/hides)
+let viewportHeight = window.innerHeight;
+window.addEventListener("scroll", () => {
+  if (window.innerHeight !== viewportHeight) {
+    viewportHeight = window.innerHeight;
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  }
+});
+
+// Use VisualViewport API if available for better mobile support
+if ("visualViewport" in window) {
+  window.visualViewport.addEventListener("resize", () => {
+    const activeButton = document.querySelector(".tab-button.active");
+    if (activeButton) {
+      updateIndicatorPosition(activeButton);
+    }
+  });
+}
 
 // Make switchTab globally accessible
 window.switchTab = switchTab;
