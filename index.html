@@ -12,6 +12,12 @@
     <header>
       <h1>Christopher Kumar</h1>
       <p class="subtitle">Computer Systems Engineer & Researcher</p>
+      <p class="about-me">
+        Passionate about bridging the gap between cutting-edge research and
+        practical applications. Specializing in machine learning, computer
+        vision, and audio processing with a focus on building innovative
+        solutions that push technological boundaries.
+      </p>
       <div class="header-contact-links">
         <a href="mailto:your.email@example.com" class="header-contact-link">
           <svg
@@ -55,6 +61,31 @@
           </svg>
           GitHub
         </a>
+        <a
+          href="https://drive.google.com/file/d/1dS-SfApwipPBnU6ICy0jSEu1XnfnVF2f/view"
+          target="_blank"
+          class="header-contact-link resume-link"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            ></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <line x1="9" y1="10" x2="9" y2="10"></line>
+          </svg>
+          Resume
+        </a>
       </div>
     </header>
 
@@ -67,6 +98,18 @@
     <div id="research-projects" class="tab-content">
       <div class="projects-container" id="research-projects-container">
         <!-- Research projects will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <div id="work-experience" class="tab-content">
+      <div class="experience-container" id="work-experience-container">
+        <!-- Work experience will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <div id="education" class="tab-content">
+      <div class="education-container" id="education-container">
+        <!-- Education entries will be dynamically inserted here -->
       </div>
     </div>
 
@@ -83,17 +126,23 @@
     <div class="tab-container">
       <div class="tab-nav">
         <div class="tab-indicator" id="tabIndicator"></div>
+        <button class="tab-button" onclick="switchTab('work-experience', this)">
+          Experience
+        </button>
+        <button class="tab-button" onclick="switchTab('education', this)">
+          Education
+        </button>
         <button
           class="tab-button active"
           onclick="switchTab('coding-projects', this)"
         >
-          Coding Projects
+          Coding
         </button>
         <button
           class="tab-button"
           onclick="switchTab('research-projects', this)"
         >
-          Research Projects
+          Research
         </button>
       </div>
     </div>

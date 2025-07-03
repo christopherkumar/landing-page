@@ -1,3 +1,57 @@
+// Function to create work experience cards
+function createExperienceCard(experience, index) {
+  const techTags = experience.technologies
+    .map((tech) => `<span class="tech-tag">${tech}</span>`)
+    .join("");
+
+  const side = index % 2 === 0 ? "left" : "right";
+
+  return `
+        <div class="timeline-item ${side}" style="animation-delay: ${
+    index * 0.1
+  }s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h3 class="timeline-title">${experience.title}</h3>
+                    <span class="timeline-duration">${
+                      experience.duration
+                    }</span>
+                </div>
+                <h4 class="timeline-company">${experience.company}</h4>
+                <p class="timeline-description">${experience.description}</p>
+                <div class="tech-stack">${techTags}</div>
+            </div>
+        </div>
+    `;
+}
+
+// Function to create education cards
+function createEducationCard(education, index) {
+  const highlights = education.highlights
+    .map((highlight) => `<li>${highlight}</li>`)
+    .join("");
+
+  const side = index % 2 === 0 ? "left" : "right";
+
+  return `
+        <div class="timeline-item ${side}" style="animation-delay: ${
+    index * 0.1
+  }s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h3 class="timeline-title">${education.degree}</h3>
+                    <span class="timeline-duration">${education.duration}</span>
+                </div>
+                <h4 class="timeline-institution">${education.institution}</h4>
+                <p class="timeline-description">${education.description}</p>
+                <ul class="education-highlights">${highlights}</ul>
+            </div>
+        </div>
+    `;
+}
+
 // Function to create coding project cards
 function createCodingProjectCard(project) {
   const techTags = project.technologies
@@ -112,6 +166,24 @@ function renderProjects() {
   researchContainer.innerHTML = researchProjects
     .map((project) => createResearchProjectCard(project))
     .join("");
+
+  // Render work experience
+  const experienceContainer = document.getElementById(
+    "work-experience-container"
+  );
+  experienceContainer.innerHTML = `
+    <div class="timeline-line"></div>
+    ${workExperience
+      .map((experience, index) => createExperienceCard(experience, index))
+      .join("")}
+  `;
+
+  // Render education
+  const educationContainer = document.getElementById("education-container");
+  educationContainer.innerHTML = `
+    <div class="timeline-line"></div>
+    ${education.map((edu, index) => createEducationCard(edu, index)).join("")}
+  `;
 }
 
 // Tab switching functionality
@@ -140,6 +212,16 @@ function updateIndicatorPosition(activeButton) {
 
   indicator.style.width = `${buttonRect.width}px`;
   indicator.style.left = `${buttonRect.left - navRect.left}px`;
+}
+
+// Initialize indicator
+function initializeIndicator() {
+  const activeButton = document.querySelector(".tab-button.active");
+  if (activeButton) {
+    updateIndicatorPosition(activeButton);
+    return true;
+  }
+  return false;
 }
 
 // Initialize on page load
