@@ -447,8 +447,9 @@
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="message system">
-          Hi! I'm an AI assistant. Ask me anything about Christopher's projects,
-          experience, or skills!
+          Hi! Ask me anything about Christopher's projects, experience, or
+          skills! Try questions like "where did he study?" or "what has he
+          built?"
         </div>
       </div>
       <div class="chat-input-container">
@@ -545,6 +546,16 @@
           chatWindow.classList.add("active");
           chatButton.style.transform = "scale(0.9)";
           document.getElementById("chatInput").focus();
+
+          // Check API status on first open
+          if (
+            messageHistory.length === 0 &&
+            (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || !GEMINI_API_KEY)
+          ) {
+            console.log(
+              "Chat opened - Using enhanced fallback system (API not configured)"
+            );
+          }
         } else {
           chatWindow.classList.remove("active");
           chatButton.style.transform = "scale(1)";
@@ -649,32 +660,38 @@
         showTypingIndicator();
 
         try {
-          // Create a focused prompt
-          const systemPrompt = `You are an AI assistant for Christopher Kumar's portfolio website. 
-          You should ONLY answer questions about Christopher's professional background, projects, skills, and experience.
-          Be helpful, concise, and professional. If asked about topics unrelated to Christopher's portfolio, 
-          politely redirect the conversation back to his professional work.
-          
-          Here is Christopher's portfolio information:
-          ${buildPortfolioContext()}
-          
-          Important guidelines:
-          - Only discuss information provided in the portfolio context
-          - Don't make up or assume information not in the context
-          - Keep responses concise and relevant
-          - Be professional and helpful
-          - If asked about contact information, refer to the links in the header
-          - Don't engage with inappropriate or off-topic questions`;
-
           // Prepare conversation history for Gemini
           const conversationHistory = messageHistory.map((msg, i) => ({
             role: i % 2 === 0 ? "user" : "model",
             parts: [{ text: msg }],
           }));
 
-          const response = await fetch(
-            `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
-            {
+          let response;
+
+          // Check if we're in production (Netlify) or development
+          if (
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+          ) {
+            // Development: Direct API call (requires API key in code)
+            console.log("Using development mode - direct API call");
+            console.log(
+              "API Key configured:",
+              GEMINI_API_KEY !== "YOUR_API_KEY_HERE" && GEMINI_API_KEY
+                ? "Yes"
+                : "No"
+            );
+
+            if (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
+              throw new Error(
+                "API key not configured. Please create a config.js file with your Gemini API key."
+              );
+            }
+
+            const apiUrl = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
+            console.log("Making API request to Gemini...");
+
+            response = await fetch(apiUrl, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -686,20 +703,20 @@
                     parts: [
                       {
                         text: `You are an AI assistant for Christopher Kumar's portfolio website. 
-                    You should ONLY answer questions about Christopher's professional background, projects, skills, and experience.
-                    Be helpful, concise, and professional. If asked about topics unrelated to Christopher's portfolio, 
-                    politely redirect the conversation back to his professional work.
-                    
-                    Here is Christopher's portfolio information:
-                    ${buildPortfolioContext()}
-                    
-                    Important guidelines:
-                    - Only discuss information provided in the portfolio context
-                    - Don't make up or assume information not in the context
-                    - Keep responses concise (2-3 sentences max)
-                    - Be professional and helpful
-                    - If asked about contact information, refer to the links in the header
-                    - Don't engage with inappropriate or off-topic questions`,
+                      You should ONLY answer questions about Christopher's professional background, projects, skills, and experience.
+                      Be helpful, concise, and professional. If asked about topics unrelated to Christopher's portfolio, 
+                      politely redirect the conversation back to his professional work.
+                      
+                      Here is Christopher's portfolio information:
+                      ${buildPortfolioContext()}
+                      
+                      Important guidelines:
+                      - Only discuss information provided in the portfolio context
+                      - Don't make up or assume information not in the context
+                      - Keep responses concise (2-3 sentences max)
+                      - Be professional and helpful
+                      - If asked about contact information, refer to the links in the header
+                      - Don't engage with inappropriate or off-topic questions`,
                       },
                     ],
                   },
@@ -734,23 +751,47 @@
                   },
                 ],
               }),
-            }
-          );
+            });
+
+            console.log("API Response status:", response.status);
+          } else {
+            // Production: Use Netlify function
+            console.log("Using production mode - Netlify function");
+            response = await fetch("/.netlify/functions/chat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message,
+                conversationHistory,
+                portfolioContext: buildPortfolioContext(),
+              }),
+            });
+          }
 
           if (!response.ok) {
-            throw new Error("API request failed");
+            const errorText = await response.text();
+            console.error("API Error Response:", errorText);
+            throw new Error(
+              `API request failed: ${response.status} - ${errorText}`
+            );
           }
 
           const data = await response.json();
+          console.log("API Response data:", data);
 
-          if (
-            !data.candidates ||
-            !data.candidates[0]?.content?.parts?.[0]?.text
-          ) {
+          let aiResponse;
+          if (data.response) {
+            // Response from Netlify function
+            aiResponse = data.response;
+          } else if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            // Direct Gemini API response
+            aiResponse = data.candidates[0].content.parts[0].text;
+          } else {
+            console.error("Invalid API response structure:", data);
             throw new Error("Invalid API response");
           }
-
-          const aiResponse = data.candidates[0].content.parts[0].text;
 
           // Remove typing indicator
           removeTypingIndicator();
@@ -770,7 +811,20 @@
           console.error("Chat error:", error);
           removeTypingIndicator();
 
-          // Fallback responses for common questions
+          // Check if this is an API configuration issue
+          if (
+            GEMINI_API_KEY === "YOUR_API_KEY_HERE" ||
+            !GEMINI_API_KEY ||
+            error.message.includes("API key not configured")
+          ) {
+            // Don't show error message every time - just use the fallback silently
+            console.log("Using fallback responses - API not configured");
+          } else {
+            // Only show error for actual API failures
+            console.error("API Error details:", error.message);
+          }
+
+          // Always provide intelligent fallback responses
           const fallbackResponse = getFallbackResponse(message);
           addMessage(fallbackResponse, "assistant");
         } finally {
@@ -782,35 +836,304 @@
         }
       }
 
-      function getFallbackResponse(message) {
+      // Helper function for fuzzy string matching
+      function calculateSimilarity(str1, str2) {
+        const longer = str1.length > str2.length ? str1 : str2;
+        const shorter = str1.length > str2.length ? str2 : str1;
+
+        if (longer.length === 0) return 1.0;
+
+        const editDistance = (function () {
+          const matrix = [];
+          for (let i = 0; i <= shorter.length; i++) {
+            matrix[i] = [i];
+          }
+          for (let j = 0; j <= longer.length; j++) {
+            matrix[0][j] = j;
+          }
+          for (let i = 1; i <= shorter.length; i++) {
+            for (let j = 1; j <= longer.length; j++) {
+              if (shorter.charAt(i - 1) === longer.charAt(j - 1)) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+              } else {
+                matrix[i][j] = Math.min(
+                  matrix[i - 1][j - 1] + 1,
+                  matrix[i][j - 1] + 1,
+                  matrix[i - 1][j] + 1
+                );
+              }
+            }
+          }
+          return matrix[shorter.length][longer.length];
+        })();
+
+        return (longer.length - editDistance) / longer.length;
+      }
+
+      // Improved intent detection
+      function detectIntent(message) {
         const lowerMessage = message.toLowerCase();
 
-        // Simple keyword-based responses
-        if (lowerMessage.includes("project")) {
-          return "Christopher has worked on various projects including Audio Transforms (DSP toolkit), research on ML classification with different camera hardware, and LLM automated grading systems. Which project would you like to know more about?";
-        } else if (
-          lowerMessage.includes("experience") ||
-          lowerMessage.includes("work")
-        ) {
-          return "Christopher has experience as a Software Engineering Intern at Aubot and previously worked as an AI/LLM Engineering Intern at USQ. He's also contributed to computer vision research at the Centre for Agricultural Engineering.";
-        } else if (
-          lowerMessage.includes("skill") ||
-          lowerMessage.includes("technolog")
-        ) {
-          return "Christopher is skilled in Python, JavaScript, machine learning (TensorFlow, PyTorch), computer vision, DSP, and has experience with LLMs and RAG systems. He also has strong research and engineering skills.";
-        } else if (lowerMessage.includes("education")) {
-          return "Christopher holds a Bachelor of Engineering (Honours) in Computer Systems from the University of Southern Queensland, where he focused on machine learning and computer vision.";
-        } else if (
-          lowerMessage.includes("contact") ||
-          lowerMessage.includes("email") ||
-          lowerMessage.includes("reach")
-        ) {
-          return "You can reach Christopher through the contact links in the header - Email, LinkedIn, or GitHub. His resume is also available for download.";
-        } else if (lowerMessage.includes("research")) {
-          return "Christopher has conducted research on camera hardware's impact on ML classification, LLM automated grading performance, and RAG framework evaluation. His research combines practical applications with academic rigor.";
-        } else {
-          return "I can tell you about Christopher's projects, work experience, education, research, or technical skills. What would you like to know?";
+        // Define intents with various phrasings
+        const intents = {
+          education: {
+            keywords: [
+              "education",
+              "study",
+              "studied",
+              "university",
+              "uni",
+              "degree",
+              "school",
+              "graduate",
+              "bachelor",
+              "learn",
+              "where",
+              "usq",
+              "qualification",
+            ],
+            phrases: [
+              "where did",
+              "where study",
+              "what uni",
+              "which university",
+              "what school",
+              "educational background",
+            ],
+            typos: [
+              "educatioon",
+              "eduction",
+              "studay",
+              "univeristy",
+              "bachelors",
+            ],
+          },
+          projects: {
+            keywords: [
+              "project",
+              "built",
+              "created",
+              "developed",
+              "made",
+              "coding",
+              "github",
+              "work on",
+              "portfolio",
+            ],
+            phrases: [
+              "what has",
+              "what did",
+              "show me",
+              "tell me about projects",
+            ],
+            typos: ["proejct", "projets", "prject"],
+          },
+          experience: {
+            keywords: [
+              "experience",
+              "work",
+              "job",
+              "intern",
+              "company",
+              "worked",
+              "position",
+              "role",
+              "employment",
+              "career",
+            ],
+            phrases: [
+              "work experience",
+              "where work",
+              "current job",
+              "previous jobs",
+            ],
+            typos: ["experiance", "experince", "wrk", "internshp"],
+          },
+          skills: {
+            keywords: [
+              "skill",
+              "technology",
+              "language",
+              "programming",
+              "tech",
+              "stack",
+              "tool",
+              "framework",
+              "know",
+              "can",
+            ],
+            phrases: [
+              "what languages",
+              "tech stack",
+              "programming languages",
+              "what skills",
+            ],
+            typos: ["skils", "technolgy", "programing", "langauge"],
+          },
+          research: {
+            keywords: [
+              "research",
+              "paper",
+              "study",
+              "publication",
+              "academic",
+              "thesis",
+              "honours",
+            ],
+            phrases: ["research papers", "published work", "academic work"],
+            typos: ["reserch", "reaserch", "publcation"],
+          },
+          contact: {
+            keywords: [
+              "contact",
+              "email",
+              "reach",
+              "connect",
+              "linkedin",
+              "github",
+              "resume",
+              "cv",
+              "hire",
+              "message",
+              "get in touch",
+            ],
+            phrases: [
+              "how to contact",
+              "reach out",
+              "get in touch",
+              "contact info",
+            ],
+            typos: ["contct", "emial", "linkdin", "resum"],
+          },
+          current: {
+            keywords: [
+              "current",
+              "now",
+              "today",
+              "present",
+              "doing",
+              "latest",
+              "recent",
+            ],
+            phrases: ["what doing now", "current role", "working on"],
+            typos: ["curent", "currnt", "presnt"],
+          },
+        };
+
+        // Check for exact matches first
+        for (const [intentName, intentData] of Object.entries(intents)) {
+          // Check keywords
+          for (const keyword of intentData.keywords) {
+            if (lowerMessage.includes(keyword)) {
+              return intentName;
+            }
+          }
+
+          // Check phrases
+          for (const phrase of intentData.phrases) {
+            if (lowerMessage.includes(phrase)) {
+              return intentName;
+            }
+          }
+
+          // Check common typos
+          if (intentData.typos) {
+            for (const typo of intentData.typos) {
+              if (lowerMessage.includes(typo)) {
+                return intentName;
+              }
+            }
+          }
         }
+
+        // Fuzzy matching for words in the message
+        const words = lowerMessage.split(/\s+/);
+        for (const word of words) {
+          for (const [intentName, intentData] of Object.entries(intents)) {
+            for (const keyword of intentData.keywords) {
+              if (calculateSimilarity(word, keyword) > 0.8) {
+                return intentName;
+              }
+            }
+          }
+        }
+
+        // Check for question patterns
+        if (lowerMessage.match(/^(where|what|when|who|how|which)\s/)) {
+          if (
+            lowerMessage.includes("chris") ||
+            lowerMessage.includes("he") ||
+            lowerMessage.includes("christopher")
+          ) {
+            // "where did chris study" -> education
+            if (
+              lowerMessage.match(
+                /\b(study|studied|learn|go|attend|graduate|education|uni|university)\b/
+              )
+            )
+              return "education";
+            // "what does chris do" -> current
+            if (lowerMessage.match(/\b(do|doing|work|working|job|role)\b/))
+              return "current";
+            // "what did chris build" -> projects
+            if (
+              lowerMessage.match(
+                /\b(build|built|make|made|create|created|develop|developed|project)\b/
+              )
+            )
+              return "projects";
+            // "where does chris work" -> experience
+            if (
+              lowerMessage.match(/\b(work|worked|experience|intern|company)\b/)
+            )
+              return "experience";
+          }
+        }
+
+        // Handle very short queries about education
+        if (
+          message.length < 30 &&
+          lowerMessage.match(
+            /\b(where|which|what)\b.*\b(study|studied|uni|university|school)\b/
+          )
+        ) {
+          return "education";
+        }
+
+        return "general";
+      }
+
+      function getFallbackResponse(message) {
+        const intent = detectIntent(message);
+        console.log("Detected intent:", intent, "for message:", message);
+
+        const responses = {
+          education:
+            "Christopher studied at the University of Southern Queensland (USQ), earning a Bachelor of Engineering (Honours) in Computer Systems from 2019-2023. He focused on machine learning, computer vision, and embedded systems. Before that, he completed a Foundation Science Programme at The University of the South Pacific in 2018, and graduated from Mahatma Gandhi Memorial High School in Fiji in 2017.",
+
+          projects:
+            "Christopher has built several impressive projects:\n• Audio Transforms - a DSP toolkit for real-time audio processing\n• CV Terminal Website - an interactive command-line portfolio\n• Simple Ollama Chatbot - for local LLM testing\n• Research on camera hardware's impact on ML classification\n• LLM automated grading systems\nEach showcases his skills in different areas from audio processing to AI. Which interests you most?",
+
+          experience:
+            "Christopher is currently a Software Engineering Intern at Aubot (March 2025-present), stress-testing coding exercises. Previously, he was an AI/LLM Engineering Intern at USQ, working on automated grading with Large Language Models. He also has experience as a Data Annotator for computer vision projects and worked as a youth leader at Vinnies SENSE. His diverse experience spans AI, education, and community service.",
+
+          skills:
+            "Christopher has a diverse technical skillset including:\n• Languages: Python, JavaScript, HTML/CSS\n• ML/AI: TensorFlow, PyTorch, OpenAI, Ollama, HuggingFace\n• Specialties: Computer Vision (OpenCV), DSP, RAG systems, Prompt Engineering\n• Tools: Git, Linux, Embedded Systems\nHe combines strong programming skills with deep knowledge of AI and machine learning.",
+
+          research:
+            "Christopher has authored three research papers:\n1. 'Camera Hardware Impact on ML Classification' - examining how different cameras affect ML model accuracy\n2. 'LLM Automated Grading Performance Study' - comparing LLM effectiveness across assessment types\n3. 'Applied RAG Framework Evaluation' - developing benchmarks for Retrieval-Augmented Generation systems\nAll papers demonstrate his ability to conduct rigorous research with practical applications.",
+
+          contact:
+            "You can connect with Christopher through:\n• Email - via the link in the header\n• LinkedIn - professional networking\n• GitHub - github.com/christopherkumar\n• Resume - available for download in the header\nHe's based in Brisbane, Queensland, Australia and open to opportunities in AI, software engineering, and research.",
+
+          current:
+            "Christopher is currently working as a Software Engineering Intern at Aubot (since March 2025), where he ensures the quality of their coding education platform. He continues to work on personal projects involving AI, computer vision, and web development. He's particularly interested in the intersection of AI and education, as shown by his research and internship experiences.",
+
+          general:
+            "I'm here to help you learn about Christopher Kumar! I can tell you about his:\n• Education at USQ (Computer Systems Engineering)\n• Work experience (current role at Aubot)\n• Technical projects (Audio Transforms, AI chatbots)\n• Research papers (ML, LLMs, RAG systems)\n• Skills (Python, JavaScript, ML/AI)\n• How to contact him\nWhat interests you most?",
+        };
+
+        return responses[intent] || responses.general;
       }
 
       // Close chat on escape key
