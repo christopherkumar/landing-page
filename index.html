@@ -141,6 +141,12 @@
         padding: 0.8rem 1.2rem;
         border-radius: 18px 18px 18px 4px;
         border: 1px solid rgba(0, 0, 0, 0.06);
+        line-height: 1.5;
+      }
+
+      .message.assistant strong {
+        font-weight: 600;
+        color: #0071e3;
       }
 
       .message.system {
@@ -360,7 +366,7 @@
       </div>
     </header>
 
-    <div id="coding-projects" class="tab-content">
+    <div id="coding-projects" class="tab-content active">
       <div class="projects-container" id="coding-projects-container">
         <!-- Coding projects will be dynamically inserted here -->
       </div>
@@ -372,7 +378,7 @@
       </div>
     </div>
 
-    <div id="work-experience" class="tab-content active">
+    <div id="work-experience" class="tab-content">
       <div class="experience-container" id="work-experience-container">
         <!-- Work experience will be dynamically inserted here -->
       </div>
@@ -397,16 +403,16 @@
     <div class="tab-container">
       <div class="tab-nav">
         <div class="tab-indicator" id="tabIndicator"></div>
-        <button
-          class="tab-button active"
-          onclick="switchTab('work-experience', this)"
-        >
+        <button class="tab-button" onclick="switchTab('work-experience', this)">
           Experience
         </button>
         <button class="tab-button" onclick="switchTab('education', this)">
           Education
         </button>
-        <button class="tab-button" onclick="switchTab('coding-projects', this)">
+        <button
+          class="tab-button active"
+          onclick="switchTab('coding-projects', this)"
+        >
           Coding
         </button>
         <button
@@ -447,9 +453,10 @@
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="message system">
-          Hi! Ask me anything about Christopher's projects, experience, or
-          skills! Try questions like "where did he study?" or "what has he
-          built?"
+          Hi! I'm here to answer questions about Christopher's background. Try
+          asking: • "What has he done research on?" • "What programming
+          languages does he know?" • "Tell me about his internships" • "What's
+          his most recent project?"
         </div>
       </div>
       <div class="chat-input-container">
@@ -572,7 +579,14 @@
         const messagesContainer = document.getElementById("chatMessages");
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${type}`;
-        messageDiv.textContent = content;
+
+        // Convert basic markdown formatting to HTML
+        let formattedContent = content
+          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
+          .replace(/\n/g, "<br>") // Line breaks
+          .replace(/• /g, "• "); // Preserve bullet points
+
+        messageDiv.innerHTML = formattedContent;
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
         return messageDiv;
@@ -870,9 +884,342 @@
         return (longer.length - editDistance) / longer.length;
       }
 
+      // More specific question analysis
+      function analyzeQuestion(message) {
+        const lowerMessage = message.toLowerCase();
+
+        // Check for specific question types
+        if (
+          lowerMessage.includes("research") &&
+          (lowerMessage.includes("what") || lowerMessage.includes("done"))
+        ) {
+          return "research_specific";
+        }
+        if (
+          (lowerMessage.includes("programming") ||
+            lowerMessage.includes("language")) &&
+          (lowerMessage.includes("know") || lowerMessage.includes("what"))
+        ) {
+          return "languages_only";
+        }
+        if (
+          (lowerMessage.includes("recent") ||
+            lowerMessage.includes("latest")) &&
+          (lowerMessage.includes("project") || lowerMessage.includes("coding"))
+        ) {
+          return "recent_project";
+        }
+        if (
+          lowerMessage.includes("how many") &&
+          lowerMessage.includes("project")
+        ) {
+          return "project_count";
+        }
+        if (
+          lowerMessage.includes("current") &&
+          (lowerMessage.includes("job") ||
+            lowerMessage.includes("role") ||
+            lowerMessage.includes("work"))
+        ) {
+          return "current_job";
+        }
+        if (
+          lowerMessage.includes("intern") &&
+          (lowerMessage.includes("where") || lowerMessage.includes("what"))
+        ) {
+          return "internship_details";
+        }
+        if (
+          lowerMessage.includes("honors") ||
+          lowerMessage.includes("honours")
+        ) {
+          return "honours_project";
+        }
+        if (
+          (lowerMessage.includes("ai") ||
+            lowerMessage.includes("artificial intelligence")) &&
+          (lowerMessage.includes("project") || lowerMessage.includes("work"))
+        ) {
+          return "ai_projects";
+        }
+        if (
+          lowerMessage.includes("volunteer") ||
+          lowerMessage.includes("community")
+        ) {
+          return "volunteer_work";
+        }
+        if (
+          (lowerMessage.includes("graduation") ||
+            lowerMessage.includes("graduate")) &&
+          lowerMessage.includes("when")
+        ) {
+          return "graduation_date";
+        }
+        if (
+          lowerMessage.includes("audio transform") ||
+          lowerMessage.includes("audio project")
+        ) {
+          return "audio_transforms_project";
+        }
+        if (
+          lowerMessage.includes("terminal") &&
+          (lowerMessage.includes("website") || lowerMessage.includes("cv"))
+        ) {
+          return "terminal_project";
+        }
+        if (
+          lowerMessage.includes("rag") &&
+          (lowerMessage.includes("what") || lowerMessage.includes("evaluation"))
+        ) {
+          return "rag_research";
+        }
+        if (
+          (lowerMessage.includes("skill") ||
+            lowerMessage.includes("technology")) &&
+          lowerMessage.includes("ai")
+        ) {
+          return "ai_skills";
+        }
+        if (
+          lowerMessage.includes("python") &&
+          (lowerMessage.includes("project") ||
+            lowerMessage.includes("experience"))
+        ) {
+          return "python_experience";
+        }
+        if (
+          (lowerMessage.includes("good at") ||
+            lowerMessage.includes("expertise") ||
+            lowerMessage.includes("specialize")) &&
+          !lowerMessage.includes("ai")
+        ) {
+          return "expertise_summary";
+        }
+
+        return null;
+      }
+
+      // Get specific data from portfolio
+      function getPortfolioData(dataType) {
+        switch (dataType) {
+          case "research_papers":
+            return researchProjects.map((p) => p.title);
+          case "programming_languages":
+            // Extract from technical skills section and resume data
+            return [
+              "Python",
+              "JavaScript",
+              "HTML/CSS",
+              "C",
+              "C++",
+              "C#",
+              "MATLAB",
+            ];
+          case "ai_frameworks":
+            return ["TensorFlow", "PyTorch", "Scikit-Learn", "OpenCV"];
+          case "llm_tools":
+            return ["OpenAI", "Claude", "Gemini", "HuggingFace", "Ollama"];
+          case "recent_projects":
+            // Return coding projects in order (assuming they're listed newest first)
+            return codingProjects.slice(0, 3);
+          case "all_projects":
+            return [...codingProjects, ...researchProjects];
+          case "current_job":
+            return workExperience[0]; // First job is current
+          case "internships":
+            return workExperience.filter((job) => job.title.includes("Intern"));
+        }
+        return null;
+      }
+
+      // Generate dynamic responses based on actual data
+      function generateDynamicResponse(questionType, message) {
+        const responses = {
+          research_specific: () => {
+            const papers = researchProjects;
+            return (
+              `Christopher has conducted research on ${papers.length} main topics:\n\n` +
+              papers
+                .map((p, i) => `${i + 1}. **${p.title}** - ${p.description}`)
+                .join("\n\n") +
+              `\n\nHis research spans machine learning, computer vision, and AI applications in education.`
+            );
+          },
+
+          languages_only: () => {
+            const languages = getPortfolioData("programming_languages");
+            return `Christopher knows ${
+              languages.length
+            } programming languages: ${languages
+              .slice(0, -1)
+              .join(", ")}, and ${
+              languages[languages.length - 1]
+            }. Python and JavaScript are his primary languages, with extensive experience in web development (HTML/CSS) and systems programming (C/C++).`;
+          },
+
+          recent_project: () => {
+            const recent = codingProjects[0]; // Assuming first is most recent
+            return `Christopher's most recent coding project is **${
+              recent.title
+            }**. ${recent.description} It uses ${recent.technologies.join(
+              ", "
+            )}. ${
+              recent.siteUrl
+                ? `You can check it out at: ${recent.siteUrl}`
+                : "The code is available on his GitHub."
+            }`;
+          },
+
+          project_count: () => {
+            const codingCount = codingProjects.length;
+            const researchCount = researchProjects.length;
+            return `Christopher has completed ${codingCount} coding projects and ${researchCount} research projects, totaling ${
+              codingCount + researchCount
+            } major projects. His coding work includes web applications, AI tools, and audio processing, while his research focuses on ML, computer vision, and AI evaluation.`;
+          },
+
+          current_job: () => {
+            const current = workExperience[0];
+            return `Christopher is currently a **${current.title}** at **${
+              current.company
+            }** (since ${current.duration.split(" - ")[0]}). ${
+              current.description
+            }`;
+          },
+
+          internship_details: () => {
+            const internships = getPortfolioData("internships");
+            return (
+              `Christopher has completed ${internships.length} internships:\n\n` +
+              internships
+                .map(
+                  (job) =>
+                    `• **${job.title}** at ${job.company} (${job.duration})\n  ${job.description}`
+                )
+                .join("\n\n")
+            );
+          },
+
+          honours_project: () => {
+            return `Christopher's Honours research project was titled "Effect of Camera Model and Camera Settings on Image Classification". He investigated how different camera hardware and settings influence ML image classification accuracy. The project involved designing replicable image capture procedures and evaluating camera variations' impact on performance. This research provides insights for optimizing camera settings in computer vision applications.`;
+          },
+
+          ai_projects: () => {
+            const aiProjects = [...codingProjects, ...researchProjects].filter(
+              (p) =>
+                p.technologies.some((tech) =>
+                  [
+                    "Python",
+                    "TensorFlow",
+                    "PyTorch",
+                    "OpenAI",
+                    "Ollama",
+                    "LLM",
+                    "ML",
+                    "AI",
+                    "RAG",
+                    "NLP",
+                  ].includes(tech)
+                )
+            );
+            return (
+              `Christopher has worked on ${aiProjects.length} AI/ML projects:\n\n` +
+              aiProjects
+                .map((p) => `• **${p.title}** - ${p.description}`)
+                .join("\n\n") +
+              `\n\nHis AI work spans computer vision, natural language processing, and practical applications in education.`
+            );
+          },
+
+          volunteer_work: () => {
+            const volunteer = workExperience.find((job) =>
+              job.title.includes("Volunteer")
+            );
+            return volunteer
+              ? `Christopher volunteered as a Youth Leader at Vinnies SENSE from April 2019 to October 2020. ${volunteer.description} This experience helped him develop leadership and mentoring skills while giving back to the community.`
+              : `Christopher has volunteer experience as a youth leader, helping children transition from support programs and creating safe spaces for them to build trust and open up.`;
+          },
+
+          graduation_date: () => {
+            return `Christopher graduated from the University of Southern Queensland in 2023 with a Bachelor of Engineering (Honours) in Computer Systems. He completed his degree over 4 years (2019-2023), focusing on machine learning, computer vision, and embedded systems.`;
+          },
+
+          audio_transforms_project: () => {
+            const audioProject = codingProjects.find(
+              (p) => p.title === "Audio Transforms"
+            );
+            return audioProject
+              ? `**Audio Transforms** is Christopher's DSP toolkit for real-time audio processing. ${
+                  audioProject.description
+                } Built with ${audioProject.technologies.join(
+                  ", "
+                )}, it demonstrates his expertise in digital signal processing and web audio APIs. You can try it at: ${
+                  audioProject.siteUrl
+                }`
+              : `Audio Transforms is a powerful audio processing toolkit Christopher built for real-time transformations and manipulations, featuring DSP algorithms for filtering, effects, and spectral analysis.`;
+          },
+
+          terminal_project: () => {
+            const terminalProject = codingProjects.find((p) =>
+              p.title.includes("Terminal")
+            );
+            return terminalProject
+              ? `The **CV Terminal Website** is Christopher's creative portfolio approach - an interactive command-line interface where visitors type commands to explore his projects and experience. ${terminalProject.description} Check it out at: ${terminalProject.siteUrl}`
+              : `Christopher built an interactive terminal-style portfolio website with command-line navigation, offering a unique developer-friendly way to explore his work.`;
+          },
+
+          rag_research: () => {
+            const ragProject = researchProjects.find((p) =>
+              p.title.includes("RAG")
+            );
+            return ragProject
+              ? `Christopher's **RAG Framework Evaluation** research develops comprehensive methodologies for assessing Retrieval-Augmented Generation systems. ${ragProject.description} This work is crucial for improving AI systems that combine retrieval with generation capabilities. Read the paper: ${ragProject.paperUrl}`
+              : `Christopher researched Retrieval-Augmented Generation (RAG) evaluation, developing benchmarks for measuring retrieval quality and generation accuracy in AI systems.`;
+          },
+
+          ai_skills: () => {
+            return `Christopher's AI/ML expertise includes:\n\n**Frameworks**: TensorFlow, PyTorch, Scikit-Learn\n**LLMs**: OpenAI API, Claude, Gemini, Ollama (local deployment)\n**Platforms**: HuggingFace, Google Colab\n**Specializations**: Computer Vision (OpenCV), NLP, Prompt Engineering, RAG systems\n**Experience**: Built chatbots, automated grading systems, and conducted ML research\n\nHe combines theoretical knowledge with practical implementation skills.`;
+          },
+
+          python_experience: () => {
+            const pythonProjects = [
+              ...codingProjects,
+              ...researchProjects,
+            ].filter((p) => p.technologies.includes("Python"));
+            return (
+              `Christopher has extensive Python experience across ${pythonProjects.length}+ projects:\n\n` +
+              `**AI/ML**: Built chatbots, implemented computer vision models, developed RAG systems\n` +
+              `**Research**: Used Python for all ${researchProjects.length} research papers\n` +
+              `**Libraries**: Proficient with TensorFlow, PyTorch, Pandas, NumPy, OpenCV\n` +
+              `**Internships**: Both USQ and Aubot roles heavily used Python\n\n` +
+              `Python is his primary language for AI development and data analysis.`
+            );
+          },
+
+          expertise_summary: () => {
+            return (
+              `Christopher specializes in the intersection of **AI/ML and practical software engineering**. His key strengths:\n\n` +
+              `🎯 **Core Expertise**: Python development, Machine Learning, Computer Vision\n` +
+              `🤖 **AI Focus**: LLMs, RAG systems, Prompt Engineering, NLP\n` +
+              `💻 **Development**: Full-stack web apps, DSP/audio processing, API integration\n` +
+              `🔬 **Research**: Published ${researchProjects.length} papers on ML applications\n\n` +
+              `He's particularly good at building AI-powered tools that solve real problems, as shown by his grading automation work and various projects.`
+            );
+          },
+        };
+
+        return responses[questionType] ? responses[questionType]() : null;
+      }
+
       // Improved intent detection
       function detectIntent(message) {
         const lowerMessage = message.toLowerCase();
+
+        // First check for specific question types
+        const specificType = analyzeQuestion(message);
+        if (specificType) {
+          return specificType;
+        }
 
         // Define intents with various phrasings
         const intents = {
@@ -1107,33 +1454,55 @@
         const intent = detectIntent(message);
         console.log("Detected intent:", intent, "for message:", message);
 
-        const responses = {
-          education:
-            "Christopher studied at the University of Southern Queensland (USQ), earning a Bachelor of Engineering (Honours) in Computer Systems from 2019-2023. He focused on machine learning, computer vision, and embedded systems. Before that, he completed a Foundation Science Programme at The University of the South Pacific in 2018, and graduated from Mahatma Gandhi Memorial High School in Fiji in 2017.",
+        // First try to generate a dynamic response for specific questions
+        const dynamicResponse = generateDynamicResponse(intent, message);
+        if (dynamicResponse) {
+          return dynamicResponse;
+        }
 
-          projects:
-            "Christopher has built several impressive projects:\n• Audio Transforms - a DSP toolkit for real-time audio processing\n• CV Terminal Website - an interactive command-line portfolio\n• Simple Ollama Chatbot - for local LLM testing\n• Research on camera hardware's impact on ML classification\n• LLM automated grading systems\nEach showcases his skills in different areas from audio processing to AI. Which interests you most?",
+        // Generate unknown response dynamically
+        const generateUnknownResponse = () => {
+          const randomSuggestions = [
+            `his ${researchProjects.length} research papers on ML and AI`,
+            "his internship experiences at USQ and Aubot",
+            "the Audio Transforms project he built",
+            "his technical skills in Python and JavaScript",
+            "how to contact him for opportunities",
+          ];
+          const suggestion =
+            randomSuggestions[
+              Math.floor(Math.random() * randomSuggestions.length)
+            ];
 
-          experience:
-            "Christopher is currently a Software Engineering Intern at Aubot (March 2025-present), stress-testing coding exercises. Previously, he was an AI/LLM Engineering Intern at USQ, working on automated grading with Large Language Models. He also has experience as a Data Annotator for computer vision projects and worked as a youth leader at Vinnies SENSE. His diverse experience spans AI, education, and community service.",
-
-          skills:
-            "Christopher has a diverse technical skillset including:\n• Languages: Python, JavaScript, HTML/CSS\n• ML/AI: TensorFlow, PyTorch, OpenAI, Ollama, HuggingFace\n• Specialties: Computer Vision (OpenCV), DSP, RAG systems, Prompt Engineering\n• Tools: Git, Linux, Embedded Systems\nHe combines strong programming skills with deep knowledge of AI and machine learning.",
-
-          research:
-            "Christopher has authored three research papers:\n1. 'Camera Hardware Impact on ML Classification' - examining how different cameras affect ML model accuracy\n2. 'LLM Automated Grading Performance Study' - comparing LLM effectiveness across assessment types\n3. 'Applied RAG Framework Evaluation' - developing benchmarks for Retrieval-Augmented Generation systems\nAll papers demonstrate his ability to conduct rigorous research with practical applications.",
-
-          contact:
-            "You can connect with Christopher through:\n• Email - via the link in the header\n• LinkedIn - professional networking\n• GitHub - github.com/christopherkumar\n• Resume - available for download in the header\nHe's based in Brisbane, Queensland, Australia and open to opportunities in AI, software engineering, and research.",
-
-          current:
-            "Christopher is currently working as a Software Engineering Intern at Aubot (since March 2025), where he ensures the quality of their coding education platform. He continues to work on personal projects involving AI, computer vision, and web development. He's particularly interested in the intersection of AI and education, as shown by his research and internship experiences.",
-
-          general:
-            "I'm here to help you learn about Christopher Kumar! I can tell you about his:\n• Education at USQ (Computer Systems Engineering)\n• Work experience (current role at Aubot)\n• Technical projects (Audio Transforms, AI chatbots)\n• Research papers (ML, LLMs, RAG systems)\n• Skills (Python, JavaScript, ML/AI)\n• How to contact him\nWhat interests you most?",
+          return `I don't have specific information about that, but I'd be happy to tell you about ${suggestion}. You can also check out his full resume (link in the header) for complete details. What else would you like to know?`;
         };
 
-        return responses[intent] || responses.general;
+        const responses = {
+          education:
+            "Christopher studied at the University of Southern Queensland (USQ), earning a Bachelor of Engineering (Honours) in Computer Systems from 2019-2023. He focused on machine learning, computer vision, and embedded systems. Before that, he completed a Foundation Science Programme at The University of the South Pacific in 2018.",
+
+          projects: `I can tell you about Christopher's projects! He's built ${codingProjects.length} coding projects and conducted ${researchProjects.length} research studies. Some highlights include Audio Transforms (real-time audio processing), an interactive CV Terminal Website, and research on ML classification. What specific project would you like to know more about?`,
+
+          experience:
+            "Christopher is currently a Software Engineering Intern at Aubot, where he stress-tests coding exercises. He previously interned at USQ as an AI/LLM Engineer, developing automated grading systems. He's also worked as a Data Annotator and youth leader, giving him diverse experience across tech and community service.",
+
+          skills:
+            "Christopher's technical skills span multiple areas:\n• **Languages**: Python, JavaScript, C/C++, C#, MATLAB, HTML/CSS\n• **AI/ML**: TensorFlow, PyTorch, OpenAI, Ollama, HuggingFace\n• **Specialties**: Computer Vision, NLP, RAG systems, Prompt Engineering\n• **Tools**: Git, Docker, Linux, SQL\nHe's particularly strong in Python and JavaScript with deep ML expertise.",
+
+          research: `Christopher has published ${researchProjects.length} research papers focusing on practical AI applications. His work includes studying camera hardware impacts on ML models, evaluating LLM grading capabilities, and developing RAG framework benchmarks. Would you like details on any specific research?`,
+
+          contact:
+            "You can reach Christopher through several channels:\n• **Email** - click the email link in the header\n• **LinkedIn** - connect professionally\n• **GitHub** - github.com/christopherkumar (see his code)\n• **Resume** - downloadable PDF in the header\nHe's based in Brisbane and welcomes opportunities in AI and software engineering!",
+
+          current:
+            "Right now, Christopher works as a Software Engineering Intern at Aubot, ensuring their coding platform delivers quality education. He's actively building projects in AI and web development, with a focus on practical applications that help people learn and work more effectively.",
+
+          general:
+            "I'm here to help you learn about Christopher Kumar! Ask me about:\n• His education and qualifications\n• Work experience and internships\n• Technical projects and research\n• Programming skills and expertise\n• How to get in touch\nWhat would you like to know?",
+        };
+
+        // Return the appropriate response, defaulting to 'unknown' for unrecognized intents
+        return responses[intent] || generateUnknownResponse();
       }
 
       // Close chat on escape key
