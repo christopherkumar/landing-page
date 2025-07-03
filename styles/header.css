@@ -26,6 +26,12 @@ h1 {
   margin-bottom: 1rem;
   letter-spacing: 0.02em;
 }
+.location {
+  font-size: 1rem;
+  color: #86868b;
+  margin-bottom: 1rem;
+}
+
 
 .about-me {
   font-size: 1rem;
