@@ -1,0 +1,146 @@
+/* Card Structure - Adaptive layout system */
+.project-card,
+.research-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.project-card:hover,
+.research-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.project-card:hover {
+  border-color: rgba(0, 113, 227, 0.2);
+}
+
+.research-card:hover {
+  border-color: rgba(94, 92, 230, 0.2);
+}
+
+/* Title section - adaptive height */
+.title-section {
+  margin-bottom: 1.5rem;
+}
+
+.project-title,
+.research-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Description section - adaptive height */
+.description-section {
+  margin-bottom: 1.5rem;
+}
+
+.project-description {
+  color: #86868b;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Tags section - adaptive height */
+.tags-section {
+  margin-bottom: 1.5rem;
+}
+
+/* Links section - stays at bottom */
+.links-section {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.project-links,
+.research-links {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
+}
+
+/* Project links */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #0071e3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  width: fit-content;
+}
+
+.project-link svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  width: 14px;
+  height: 14px;
+}
+
+.project-link:hover {
+  color: #0051a2;
+  transform: translateX(4px);
+}
+
+.project-link:hover svg {
+  transform: scale(1.1);
+}
+
+.project-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Research links */
+.research-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #5e5ce6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  width: fit-content;
+}
+
+.research-link svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  width: 14px;
+  height: 14px;
+}
+
+.research-link:hover {
+  color: #4a47b8;
+  transform: translateX(4px);
+}
+
+.research-link:hover svg {
+  transform: scale(1.1);
+}
+
+.research-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

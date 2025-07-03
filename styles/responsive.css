@@ -1,0 +1,162 @@
+/* Responsive design */
+@media (max-width: 768px) {
+  /* Header adjustments */
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .about-me {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+  }
+
+  .header-contact-links {
+    gap: 1rem;
+  }
+
+  .header-contact-link {
+    font-size: 0.85rem;
+  }
+
+  .resume-link {
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* Projects container */
+  .projects-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .experience-container,
+  .education-container {
+    padding: 1rem;
+  }
+
+  /* Mobile Timeline */
+  .timeline-line {
+    left: 20px;
+    width: 2px;
+    top: 1rem;
+    height: calc(100% - 2rem);
+    transform: translateX(0);
+    animation: lineGrowMobile 1s ease-out;
+  }
+
+  .timeline-item {
+    width: 100%;
+    padding: 1rem 0 1rem 3rem;
+  }
+
+  .timeline-item.left,
+  .timeline-item.right {
+    left: 0;
+    text-align: left;
+    padding-left: 3rem;
+    padding-right: 1rem;
+  }
+
+  .timeline-dot {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  .timeline-content {
+    padding: 1.5rem;
+  }
+
+  .timeline-content::before {
+    display: none;
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timeline-item.left .timeline-header {
+    flex-direction: column;
+  }
+
+  .timeline-item.left .tech-stack {
+    justify-content: flex-start;
+  }
+
+  .timeline-title {
+    font-size: 1.1rem;
+  }
+
+  .timeline-company,
+  .timeline-institution {
+    font-size: 0.95rem;
+  }
+
+  .timeline-description {
+    font-size: 0.85rem;
+  }
+
+  .timeline-duration {
+    font-size: 0.8rem;
+  }
+
+  /* Cards adjustments */
+  .project-card,
+  .research-card {
+    padding: 2rem;
+    min-height: 300px;
+  }
+
+  .title-section {
+    margin-bottom: 1rem;
+  }
+
+  .description-section {
+    margin-bottom: 1rem;
+  }
+
+  .tags-section {
+    margin-bottom: 1rem;
+  }
+
+  .project-title,
+  .research-title {
+    font-size: 1.1rem;
+  }
+
+  .project-description {
+    font-size: 0.85rem;
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .project-link,
+  .research-link {
+    font-size: 0.8rem;
+  }
+
+  /* Tab navigation */
+  .tab-button {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .tab-container {
+    bottom: 10px;
+    width: 90%;
+    left: 5%;
+    transform: none;
+  }
+
+  .tab-nav {
+    gap: 2px;
+    padding: 3px;
+  }
+}

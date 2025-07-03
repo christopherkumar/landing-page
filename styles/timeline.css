@@ -1,0 +1,220 @@
+/* Timeline Styles */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: calc(100% - 4rem);
+  top: 2rem;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 5%,
+    rgba(0, 0, 0, 0.1) 95%,
+    transparent 100%
+  );
+  animation: lineGrow 1s ease-out;
+  transform-origin: top center;
+}
+
+.timeline-item {
+  position: relative;
+  width: 50%;
+  padding: 2rem 3rem;
+  animation: fadeIn 0.6s ease-out backwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.timeline-item.left {
+  left: 0;
+  text-align: right;
+  padding-right: 3rem;
+}
+
+.timeline-item.right {
+  left: 50%;
+  padding-left: 3rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border: 3px solid #0071e3;
+  border-radius: 50%;
+  top: 2.5rem;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.timeline-item.left .timeline-dot {
+  right: -8px;
+}
+
+.timeline-item.right .timeline-dot {
+  left: -8px;
+}
+
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.3);
+  border-color: #0051a2;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.timeline-content::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  top: 2.3rem;
+}
+
+.timeline-item.left .timeline-content::before {
+  right: -10px;
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+}
+
+.timeline-item.right .timeline-content::before {
+  left: -10px;
+  border-width: 10px 10px 10px 0;
+  border-color: transparent rgba(255, 255, 255, 0.9) transparent transparent;
+}
+
+.timeline-item:hover .timeline-content {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 1);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.timeline-item.left .timeline-header {
+  flex-direction: row-reverse;
+}
+
+.timeline-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+.timeline-duration {
+  font-size: 0.85rem;
+  color: #86868b;
+  font-weight: 500;
+  background: rgba(134, 134, 139, 0.08);
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.timeline-company {
+  font-size: 1rem;
+  color: #ff9500;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.timeline-institution {
+  font-size: 1rem;
+  color: #34c759;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.timeline-description {
+  color: #515154;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.timeline-item.left .timeline-description,
+.timeline-item.left .education-highlights {
+  text-align: left;
+}
+
+/* Education highlights in timeline */
+.timeline-content .education-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.timeline-content .education-highlights li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #86868b;
+  font-size: 0.85rem;
+}
+
+.timeline-content .education-highlights li:before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #34c759;
+  font-weight: bold;
+}
+
+/* Tech tags in timeline */
+.timeline-content .tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.timeline-item.left .tech-stack {
+  justify-content: flex-end;
+}
+
+/* Timeline specific colors */
+.experience-container .timeline-dot {
+  border-color: #ff9500;
+}
+
+.experience-container .timeline-item:hover .timeline-dot {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.1);
+}
+
+.experience-container .timeline-item:nth-child(2) .timeline-dot {
+  animation: pulse-orange 2s infinite;
+}
+
+.education-container .timeline-dot {
+  border-color: #34c759;
+}
+
+.education-container .timeline-item:hover .timeline-dot {
+  border-color: #28a745;
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.1);
+}
+
+.education-container .timeline-item:nth-child(2) .timeline-dot {
+  animation: pulse-green 2s infinite;
+}

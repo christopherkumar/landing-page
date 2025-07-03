@@ -1,0 +1,81 @@
+/* Header styles */
+header {
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+  animation: fadeInDown 1s ease-out;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #0071e3, #0077ed, #0071e3);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 3s ease infinite;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #86868b;
+  margin-bottom: 1rem;
+}
+
+.about-me {
+  font-size: 1rem;
+  color: #515154;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+  padding: 0 2rem;
+}
+
+/* Header contact links */
+.header-contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.header-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #86868b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.header-contact-link:hover {
+  color: #0071e3;
+  transform: translateY(-2px);
+}
+
+.header-contact-link svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.header-contact-link:hover svg {
+  transform: scale(1.1);
+}
+
+.resume-link {
+  background: rgba(0, 113, 227, 0.08);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 113, 227, 0.2);
+}
+
+.resume-link:hover {
+  background: rgba(0, 113, 227, 0.15);
+  border-color: rgba(0, 113, 227, 0.4);
+}
