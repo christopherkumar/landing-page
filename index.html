@@ -360,7 +360,7 @@
       </div>
     </header>
 
-    <div id="coding-projects" class="tab-content active">
+    <div id="coding-projects" class="tab-content">
       <div class="projects-container" id="coding-projects-container">
         <!-- Coding projects will be dynamically inserted here -->
       </div>
@@ -372,7 +372,7 @@
       </div>
     </div>
 
-    <div id="work-experience" class="tab-content">
+    <div id="work-experience" class="tab-content active">
       <div class="experience-container" id="work-experience-container">
         <!-- Work experience will be dynamically inserted here -->
       </div>
@@ -397,16 +397,16 @@
     <div class="tab-container">
       <div class="tab-nav">
         <div class="tab-indicator" id="tabIndicator"></div>
-        <button class="tab-button" onclick="switchTab('work-experience', this)">
+        <button
+          class="tab-button active"
+          onclick="switchTab('work-experience', this)"
+        >
           Experience
         </button>
         <button class="tab-button" onclick="switchTab('education', this)">
           Education
         </button>
-        <button
-          class="tab-button active"
-          onclick="switchTab('coding-projects', this)"
-        >
+        <button class="tab-button" onclick="switchTab('coding-projects', this)">
           Coding
         </button>
         <button
