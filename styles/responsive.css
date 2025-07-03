@@ -3,6 +3,7 @@
   /* Header adjustments */
   h1 {
     font-size: 2.2rem;
+    font-weight: 300; /* Slightly heavier on mobile for readability */
   }
 
   .subtitle {

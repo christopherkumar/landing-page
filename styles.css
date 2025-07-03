@@ -1,5 +1,5 @@
-/* Main styles.css file that imports all modular CSS files */
-/* This maintains a single entry point while organizing styles into logical modules */
+/* Google Fonts - DM Sans */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 /* Base styles and resets */
 @import url("styles/base.css");
