@@ -87,6 +87,14 @@ const researchProjects = [
 
 const workExperience = [
   {
+    title: "Junior AI Software Engineer",
+    company: "",
+    duration: "July 2025 - Present",
+    description:
+      "",
+    technologies: ["Python"],
+  },
+  {
     title: "Software Engineering Intern",
     company: "Aubot",
     duration: "March 2025 - Present",
